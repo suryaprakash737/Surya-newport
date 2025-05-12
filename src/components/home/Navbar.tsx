@@ -317,7 +317,7 @@ const Navbar = () => {
 
               {/* Animated text that emerges from logo */}
               <motion.div
-                className="relative hidden sm:block"
+                className="relative block"
                 initial={{ width: 0, opacity: 0 }}
                 animate={{ width: "auto", opacity: 1 }}
                 transition={{ 
@@ -377,11 +377,24 @@ const Navbar = () => {
                   {item.name}
                 </motion.a>
               ))}
+            </div>
+
+            {/* Hamburger for Mobile */}
+            <div className="flex items-center space-x-2 md:hidden">
+              <button
+                className="text-white p-2 focus:outline-none"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Open menu"
+              >
+                <Menu className="h-7 w-7" />
+              </button>
+              {/* Theme Toggle - always visible */}
               <motion.button
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                className="text-white hover:text-[#6c5ce7] transition-colors"
+                className="text-white hover:text-[#6c5ce7] transition-colors p-2"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
+                aria-label="Toggle theme"
               >
                 {theme === 'dark' ? (
                   <Sun className="h-5 w-5" />
@@ -391,14 +404,22 @@ const Navbar = () => {
               </motion.button>
             </div>
 
-            {/* Hamburger for Mobile */}
-            <button
-              className="block md:hidden text-white p-2 focus:outline-none"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Open menu"
-            >
-              <Menu className="h-7 w-7" />
-            </button>
+            {/* Theme Toggle for desktop (right of nav links) */}
+            <div className="hidden md:block ml-4">
+              <motion.button
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                className="text-white hover:text-[#6c5ce7] transition-colors p-2"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                aria-label="Toggle theme"
+              >
+                {theme === 'dark' ? (
+                  <Sun className="h-5 w-5" />
+                ) : (
+                  <Moon className="h-5 w-5" />
+                )}
+              </motion.button>
+            </div>
           </div>
         </div>
       </nav>
@@ -423,12 +444,6 @@ const Navbar = () => {
               {item.name}
             </a>
           ))}
-          <button
-            onClick={() => { setTheme(theme === 'dark' ? 'light' : 'dark'); setMobileMenuOpen(false); }}
-            className="text-white hover:text-[#6c5ce7] mt-4"
-          >
-            {theme === 'dark' ? <Sun className="h-7 w-7" /> : <Moon className="h-7 w-7" />}
-          </button>
         </div>
       )}
 
@@ -451,7 +466,7 @@ const Navbar = () => {
           >
             <button
               onClick={() => setShowLogoModal(false)}
-              className="absolute top-2 right-2 sm:top-4 sm:right-4 text-white/80 hover:text-white transition-colors"
+              className="absolute top-2 right-2 sm:top-4 sm:right-4 text-white/80 hover:text-white transition-colors z-50"
             >
               <X className="h-8 w-8" />
             </button>
