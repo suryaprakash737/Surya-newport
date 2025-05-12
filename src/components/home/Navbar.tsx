@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Moon, Sun, X } from 'lucide-react';
+import { Moon, Sun, X, Menu } from 'lucide-react';
 import { useTheme } from '@/lib/theme-provider';
 import { useActiveSection } from '@/hooks/useActiveSection';
 import { cn } from '@/lib/utils';
@@ -9,6 +9,7 @@ const Navbar = () => {
   const { theme, setTheme } = useTheme();
   const activeSection = useActiveSection();
   const [showLogoModal, setShowLogoModal] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
     { name: 'Home', href: '#home' },
@@ -281,7 +282,7 @@ const Navbar = () => {
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 bg-[#020817] border-b border-[#1e293b]">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-2 sm:px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo and Name */}
             <motion.div 
@@ -316,7 +317,7 @@ const Navbar = () => {
 
               {/* Animated text that emerges from logo */}
               <motion.div
-                className="relative"
+                className="relative hidden sm:block"
                 initial={{ width: 0, opacity: 0 }}
                 animate={{ width: "auto", opacity: 1 }}
                 transition={{ 
@@ -360,8 +361,8 @@ const Navbar = () => {
               </motion.div>
             </motion.div>
 
-            <div className="flex items-center space-x-8">
-              {/* Navigation Links */}
+            {/* Desktop Nav Links */}
+            <div className="hidden md:flex items-center space-x-8">
               {navItems.map((item) => (
                 <motion.a
                   key={item.name}
@@ -376,8 +377,6 @@ const Navbar = () => {
                   {item.name}
                 </motion.a>
               ))}
-
-              {/* Theme Toggle */}
               <motion.button
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                 className="text-white hover:text-[#6c5ce7] transition-colors"
@@ -391,9 +390,47 @@ const Navbar = () => {
                 )}
               </motion.button>
             </div>
+
+            {/* Hamburger for Mobile */}
+            <button
+              className="block md:hidden text-white p-2 focus:outline-none"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Open menu"
+            >
+              <Menu className="h-7 w-7" />
+            </button>
           </div>
         </div>
       </nav>
+
+      {/* Mobile Menu Drawer */}
+      {mobileMenuOpen && (
+        <div className="md:hidden fixed inset-0 z-40 bg-black/80 flex flex-col items-center justify-center space-y-8">
+          <button
+            className="absolute top-6 right-6 text-white"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-label="Close menu"
+          >
+            <X className="h-8 w-8" />
+          </button>
+          {navItems.map((item) => (
+            <a
+              key={item.name}
+              href={item.href}
+              className="text-2xl font-semibold text-white hover:text-[#6c5ce7]"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              {item.name}
+            </a>
+          ))}
+          <button
+            onClick={() => { setTheme(theme === 'dark' ? 'light' : 'dark'); setMobileMenuOpen(false); }}
+            className="text-white hover:text-[#6c5ce7] mt-4"
+          >
+            {theme === 'dark' ? <Sun className="h-7 w-7" /> : <Moon className="h-7 w-7" />}
+          </button>
+        </div>
+      )}
 
       {/* Logo Modal */}
       {showLogoModal && (
@@ -401,7 +438,7 @@ const Navbar = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-2 sm:p-4"
           onClick={() => setShowLogoModal(false)}
         >
           <motion.div
@@ -409,25 +446,23 @@ const Navbar = () => {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.5, opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 120 }}
-            className="relative w-screen h-screen flex items-center justify-center p-4"
+            className="relative w-full max-w-xs sm:max-w-md md:max-w-[90vh] aspect-square flex items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={() => setShowLogoModal(false)}
-              className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors"
+              className="absolute top-2 right-2 sm:top-4 sm:right-4 text-white/80 hover:text-white transition-colors"
             >
               <X className="h-8 w-8" />
             </button>
-            
             {/* Container for the large logo with enhanced glow */}
-            <div className="relative max-w-[90vh] max-h-[90vh] aspect-square">
+            <div className="relative w-full h-full">
               {/* Background glow layers */}
               <div className="absolute inset-0 rounded-full">
-                <div className="absolute inset-0 bg-purple-400/30 rounded-full blur-[100px] animate-[pulse_3s_ease-in-out_infinite]"/>
-                <div className="absolute inset-0 bg-purple-400/20 rounded-full blur-[150px] animate-[pulse_4s_ease-in-out_infinite]"/>
-                <div className="absolute inset-0 bg-purple-400/10 rounded-full blur-[200px] animate-[pulse_5s_ease-in-out_infinite]"/>
+                <div className="absolute inset-0 bg-purple-400/30 rounded-full blur-[60px] sm:blur-[100px] animate-[pulse_3s_ease-in-out_infinite]"/>
+                <div className="absolute inset-0 bg-purple-400/20 rounded-full blur-[90px] sm:blur-[150px] animate-[pulse_4s_ease-in-out_infinite]"/>
+                <div className="absolute inset-0 bg-purple-400/10 rounded-full blur-[120px] sm:blur-[200px] animate-[pulse_5s_ease-in-out_infinite]"/>
               </div>
-              
               {/* Logo */}
               <motion.div
                 initial={{ rotate: -180, opacity: 0 }}
